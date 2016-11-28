@@ -75,6 +75,10 @@ func (d *dataFile) Read(fid *srv.FFid, buf []byte, offset uint64) (int, error) {
 	glog.V(4).Infof("Entering into dataFile.Read(%v, %v, %v)", fid, buf, offset)
 	defer glog.V(4).Infof("Leaving dataFile.Read(%v, %v, %v)", fid, buf, offset)
 
+	if offset > uint64(len(op.result.(string))) {
+		return 0, nil
+	}
+
 	copy(buf, op.result.(string))
 
 	return len(op.result.(string)), nil
