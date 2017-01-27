@@ -3,6 +3,8 @@ package main
 import (
 	"bitbucket.org/copyninja/go9p/p"
 	"bitbucket.org/copyninja/go9p/p/srv"
+	"fmt"
+	"github.com/copyninja/calculatorfs/infixeval"
 	"github.com/golang/glog"
 )
 
