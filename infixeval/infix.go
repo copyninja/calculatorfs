@@ -196,6 +196,8 @@ func (infix *infixEval) process(expression string) error {
 	return nil
 }
 
+// Evaluate the given infix expression, returns result on success and error on
+// parsing failure
 func Evaluate(expression string) (interface{}, error) {
 	i := infixEval{}
 	if err := i.process(expression); err != nil {

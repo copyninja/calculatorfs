@@ -6,31 +6,31 @@ import (
 )
 
 type testData struct {
-	expression   string
-	result_type  string
-	value_int    int64
-	value_float  float64
-	error_string string
+	expression  string
+	resultType  string
+	valueInt    int64
+	valueFloat  float64
+	errorString string
 }
 
 func (testcase *testData) evaluateInfixExpr(t *testing.T) {
 	var value interface{}
 	var err error
 	if value, err = Evaluate(testcase.expression); err != nil {
-		if err.Error() != testcase.error_string {
-			t.Errorf("Was expecting error: %s, but got %s", testcase.error_string, err)
+		if err.Error() != testcase.errorString {
+			t.Errorf("Was expecting error: %s, but got %s", testcase.errorString, err)
 		}
 	}
 
-	switch testcase.result_type {
+	switch testcase.resultType {
 	case "int64":
 		result, ok := value.(int64)
 		if !ok {
 			t.Errorf("Was expecting int64 result but failed to type assert")
 		}
 
-		if result != testcase.value_int {
-			t.Errorf("'%s' = %d but got %d", testcase.expression, testcase.value_int, result)
+		if result != testcase.valueInt {
+			t.Errorf("'%s' = %d but got %d", testcase.expression, testcase.valueInt, result)
 		}
 	case "float64":
 		result, ok := value.(float64)
@@ -38,8 +38,8 @@ func (testcase *testData) evaluateInfixExpr(t *testing.T) {
 			t.Errorf("Was expecting float64 value but failed to type assert")
 		}
 
-		if result != testcase.value_float {
-			t.Errorf("'%s' = %f but got %f", testcase.expression, testcase.value_float, result)
+		if result != testcase.valueFloat {
+			t.Errorf("'%s' = %f but got %f", testcase.expression, testcase.valueFloat, result)
 		}
 
 	}

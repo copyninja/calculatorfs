@@ -13,11 +13,11 @@ type calcdir struct {
 	user p.User
 }
 
-type Output struct {
+type output struct {
 	result string
 }
 
-var op Output
+var op output
 
 type ctlFile struct {
 	srv.File
@@ -89,10 +89,10 @@ func (d *dataFile) Read(fid *srv.FFid, buf []byte, offset uint64) (int, error) {
 		return 0, nil
 	}
 
-	output := []byte(op.result)[offset:]
-	copy(buf, output)
+	out := []byte(op.result)[offset:]
+	copy(buf, out)
 
-	return len(output), nil
+	return len(out), nil
 }
 
 func (c *ctlFile) Wstat(fid *srv.FFid, dir *p.Dir) error {
