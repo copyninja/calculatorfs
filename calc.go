@@ -46,12 +46,11 @@ func mkDataFile(root *srv.File, user p.User) error {
 	glog.V(3).Infoln("Creating data file")
 	k := new(dataFile)
 
-	if err := k.Add(root, "data", user, nil, 0555, k); err != nil {
+	if err := k.Add(root, "data", user, nil, 0444, k); err != nil {
 		glog.Errorln("Can't create data file: ", err)
 		return err
 	}
 
-	op.d = k
 	return nil
 }
 
