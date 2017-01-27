@@ -47,27 +47,27 @@ func (testcase *testData) evaluateInfixExpr(t *testing.T) {
 
 func TestSimpleEval(t *testing.T) {
 	input := []*testData{
-		&testData{"2 + 3", "int64", 5, 0, ""},
-		&testData{"2.0 + 3", "float64", 0, 5.0, ""},
-		&testData{"2", "int64", 2, 0, ""},
-		&testData{"2 - 3", "int64", -1, 0, ""},
-		&testData{"2 * 3", "int64", 6, 0, ""},
-		&testData{"2 / 3", "int64", 0, 0, ""},
-		&testData{"2 / 4.0", "float64", 0, 0.5, ""},
-		&testData{"5 * 4.0", "float64", 0, 20.0, ""},
-		&testData{"20.0 / 4.0", "float64", 0, 5.0, ""},
-		&testData{"4.0 - 5.0", "float64", 0, -1.0, ""},
+		{"2 + 3", "int64", 5, 0, ""},
+		{"2.0 + 3", "float64", 0, 5.0, ""},
+		{"2", "int64", 2, 0, ""},
+		{"2 - 3", "int64", -1, 0, ""},
+		{"2 * 3", "int64", 6, 0, ""},
+		{"2 / 3", "int64", 0, 0, ""},
+		{"2 / 4.0", "float64", 0, 0.5, ""},
+		{"5 * 4.0", "float64", 0, 20.0, ""},
+		{"20.0 / 4.0", "float64", 0, 5.0, ""},
+		{"4.0 - 5.0", "float64", 0, -1.0, ""},
 
 		// Simple Errors
-		&testData{"2 / 0", "eror", 0, 0, "Attempt to divide by 0"},
-		&testData{"2 % 0", "error", 0, 0, "Attempt to divide by 0"},
-		&testData{"8.0 % 2", "error", 0, 0, "Modulus operator is not supported on float"},
-		&testData{"( 2 + 3", "error", 0, 0, "Invalid/unbalanced expression"},
-		&testData{"(2 + hello)", "error", 0, 0, "Invalid tokens in the expression"},
+		{"2 / 0", "eror", 0, 0, "Attempt to divide by 0"},
+		{"2 % 0", "error", 0, 0, "Attempt to divide by 0"},
+		{"8.0 % 2", "error", 0, 0, "Modulus operator is not supported on float"},
+		{"( 2 + 3", "error", 0, 0, "Invalid/unbalanced expression"},
+		{"(2 + hello)", "error", 0, 0, "Invalid tokens in the expression"},
 
 		// Nested errors
-		&testData{"(2 / 0)", "error", 0, 0, "Attempt to divide by 0"},
-		&testData{"2 % 0 + 3", "error", 0, 0, "Attempt to divide by 0"},
+		{"(2 / 0)", "error", 0, 0, "Attempt to divide by 0"},
+		{"2 % 0 + 3", "error", 0, 0, "Attempt to divide by 0"},
 	}
 
 	for _, test := range input {
@@ -77,11 +77,11 @@ func TestSimpleEval(t *testing.T) {
 
 func TestComplexEval(t *testing.T) {
 	input := []*testData{
-		&testData{"2 + (3*5) % 10", "int64", 7, 0, ""},
-		&testData{"(4 * 15) % 10 / 2", "int64", 0, 0, ""},
-		&testData{"(2*3 + (5*8) % 28)", "int64", 18, 0, ""},
+		{"2 + (3*5) % 10", "int64", 7, 0, ""},
+		{"(4 * 15) % 10 / 2", "int64", 0, 0, ""},
+		{"(2*3 + (5*8) % 28)", "int64", 18, 0, ""},
 
-		&testData{"11 * 6 + 21 )", "error", 0, 0, "Invalid/unbalanced expression"},
+		{"11 * 6 + 21 )", "error", 0, 0, "Invalid/unbalanced expression"},
 	}
 
 	for _, test := range input {
