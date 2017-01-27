@@ -12,7 +12,6 @@ type calcdir struct {
 }
 
 type Output struct {
-	d      *dataFile
 	result string
 }
 
