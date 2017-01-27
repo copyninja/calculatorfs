@@ -62,26 +62,39 @@ func (c *ctlFile) Write(fid *srv.FFid, data []byte, offset uint64) (int, error) 
 	defer c.Unlock()
 
 	glog.V(3).Infof("Compute the expression: %s", string(data))
-	// TODO: Compute the expression and handle error
+	value, err := infix.Evaluate(string(data))
+	if err != nil {
+		op.result = fmt.Sprint(err)
+		return len(string(data)), nil
+	}
 
-	op.result = string(data)
+	switch value.(type) {
+	case int64:
+		op.result = fmt.Sprintf("%d", value.(int64))
+	case float64:
+		op.result = fmt.Sprintf("%f", value.(float64))
+	}
 
-	return len(data), nil
+	glog.V(3).Infoln(op.result)
+	return len(string(data)), nil
 }
 
 func (d *dataFile) Read(fid *srv.FFid, buf []byte, offset uint64) (int, error) {
 	glog.V(4).Infof("Entering into dataFile.Read(%v, %v, %v)", fid, buf, offset)
 	defer glog.V(4).Infof("Leaving dataFile.Read(%v, %v, %v)", fid, buf, offset)
 
-	if offset > uint64(len(op.result.(string))) {
+	if offset > uint64(len(op.result)) {
 		return 0, nil
 	}
 
-	copy(buf, op.result.(string))
+	output := []byte(op.result)[offset:]
+	copy(buf, output)
 
-	return len(op.result.(string)), nil
+	return len(output), nil
 }
 
 func (c *ctlFile) Wstat(fid *srv.FFid, dir *p.Dir) error {
 	return nil
 }
+
+//  LocalWords:  github copyninja calculatorfs infixeval
