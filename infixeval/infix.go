@@ -19,7 +19,7 @@ const (
 	MOD
 )
 
-type InfixEval struct {
+type infixEval struct {
 	operator Stack
 	operand  Stack
 }
@@ -89,7 +89,7 @@ func evalInt(val1, val2 int64, op rune) (int64, error) {
 }
 
 // Eval executes operation on the given operands and returns result.
-func Eval(val1, val2 interface{}, op rune) (interface{}, error) {
+func eval(val1, val2 interface{}, op rune) (interface{}, error) {
 	a, ok1 := val1.(float64)
 	b, ok2 := val2.(float64)
 
@@ -119,16 +119,16 @@ func Eval(val1, val2 interface{}, op rune) (interface{}, error) {
 	return 0, nil
 }
 
-func (infix *InfixEval) evaluateTop() (interface{}, error) {
+func (infix *infixEval) evaluateTop() (interface{}, error) {
 	val2 := infix.operand.Pop()
 	val1 := infix.operand.Pop()
 	op := infix.operator.Pop()
 
-	return Eval(val1, val2, op.(rune))
+	return eval(val1, val2, op.(rune))
 }
 
 // Process parses the infix expression and returns the result
-func (infix *InfixEval) Process(expression string) error {
+func (infix *infixEval) process(expression string) error {
 	input := strings.NewReader(expression)
 	var s scanner.Scanner
 	s.Filename = "<stdin>"
@@ -194,4 +194,17 @@ func (infix *InfixEval) Process(expression string) error {
 	}
 
 	return nil
+}
+
+func Evaluate(expression string) (interface{}, error) {
+	i := infixEval{}
+	if err := i.process(expression); err != nil {
+		return nil, err
+	}
+
+	if i.operand.IsEmpty() || i.operand.Count() > 1 {
+		return nil, errors.New("Invalid/unbalanced expression")
+	}
+
+	return i.operand.Pop(), nil
 }

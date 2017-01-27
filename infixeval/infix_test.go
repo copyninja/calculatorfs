@@ -14,8 +14,9 @@ type testData struct {
 }
 
 func (testcase *testData) evaluateInfixExpr(t *testing.T) {
-	i := &InfixEval{}
-	if err := i.Process(testcase.expression); err != nil {
+	var value interface{}
+	var err error
+	if value, err = Evaluate(testcase.expression); err != nil {
 		if err.Error() != testcase.error_string {
 			t.Errorf("Was expecting error: %s, but got %s", testcase.error_string, err)
 		}
@@ -23,7 +24,7 @@ func (testcase *testData) evaluateInfixExpr(t *testing.T) {
 
 	switch testcase.result_type {
 	case "int64":
-		result, ok := i.operand.Pop().(int64)
+		result, ok := value.(int64)
 		if !ok {
 			t.Errorf("Was expecting int64 result but failed to type assert")
 		}
@@ -32,7 +33,7 @@ func (testcase *testData) evaluateInfixExpr(t *testing.T) {
 			t.Errorf("'%s' = %d but got %d", testcase.expression, testcase.value_int, result)
 		}
 	case "float64":
-		result, ok := i.operand.Pop().(float64)
+		result, ok := value.(float64)
 		if !ok {
 			t.Errorf("Was expecting float64 value but failed to type assert")
 		}
