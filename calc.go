@@ -13,7 +13,7 @@ type calcdir struct {
 
 type Output struct {
 	d      *dataFile
-	result interface{}
+	result string
 }
 
 var op Output
