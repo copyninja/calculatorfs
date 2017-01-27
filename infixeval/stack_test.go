@@ -13,9 +13,17 @@ func TestBasic(t *testing.T) {
 		t.Errorf("s.Peek() == %q, want 2", o1)
 	}
 
+	if s.Count() != 1 {
+		t.Errorf("s.Count() == %q, want 1", s.Count())
+	}
+
 	o2 := s.Pop().(string)
 	if o2 != "2" {
 		t.Errorf("s.Pop() == %q, want 2", o2)
+	}
+
+	if s.Count() != 0 {
+		t.Errorf("s.Count() == %q, want 0", s.Count())
 	}
 
 	o3 := s.Peek().(string)
@@ -32,6 +40,10 @@ func TestPushPop(t *testing.T) {
 
 	for _, x := range inp {
 		s.Push(x)
+	}
+
+	if s.Count() != 5 {
+		t.Errorf("s.Count() == %q, want 5", s.Count())
 	}
 
 	if o1 := s.Peek().(string); o1 != out[0] {

@@ -46,6 +46,14 @@ func (s *Stack) IsEmpty() bool {
 	return false
 }
 
+// Count returns number of elements in stack
+func (s *Stack) Count() int {
+	s.Lock()
+	defer s.Unlock()
+
+	return len(s.item)
+}
+
 // NewStack creates and returns new stack
 func NewStack() (s *Stack) {
 	s = &Stack{}
