@@ -32,7 +32,7 @@ func mkCtlFile(root *srv.File, user p.User) error {
 
 	glog.V(3).Infoln("Creating ctl file")
 	k := new(ctlFile)
-	if err := k.Add(root, "ctl", user, nil, 0666, k); err != nil {
+	if err := k.Add(root, "calculate", user, nil, 0666, k); err != nil {
 		glog.Errorln("Can't create ctl file: ", err)
 		return err
 	}
