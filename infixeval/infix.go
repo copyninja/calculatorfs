@@ -93,16 +93,19 @@ func eval(val1, val2 interface{}, op rune) (interface{}, error) {
 	a, ok1 := val1.(float64)
 	b, ok2 := val2.(float64)
 
-	if (ok1 || ok2) && op == MOD {
-		return 0, errors.New("Modulus operator is not supported on float")
-	}
-
-	if ok1 && !ok2 {
-		b = float64(val2.(int64))
-	} else if !ok1 && ok2 {
-		a = float64(val1.(int64))
-	} else if !ok1 && !ok2 {
+	if !ok1 && !ok2 {
 		return evalInt(val1.(int64), val2.(int64), op)
+	} else if ok1 && ok2 {
+		if op == MOD {
+			return 0, errors.New("Modulus operator is not supported on float")
+		}
+	} else {
+
+		if ok1 && !ok2 {
+			b = float64(val2.(int64))
+		} else {
+			a = float64(val1.(int64))
+		}
 	}
 
 	switch op {
