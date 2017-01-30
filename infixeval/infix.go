@@ -127,6 +127,47 @@ func (infix *infixEval) evaluateTop() (interface{}, error) {
 	return eval(val1, val2, op.(rune))
 }
 
+func (infix *infixEval) handleInput(tok, symbol rune, text string) error {
+	switch symbol {
+	case LPAREN:
+		infix.operator.Push(symbol)
+	case ADD, SUB, MUL, DIV, MOD:
+		for !infix.operator.IsEmpty() && (precedence(symbol) < precedence(infix.operator.Peek().(rune))) {
+			result, err := infix.evaluateTop()
+			if err != nil {
+				return err
+			}
+			infix.operand.Push(result)
+		}
+		infix.operator.Push(symbol)
+	case RPAREN:
+		for infix.operator.Peek().(rune) != LPAREN {
+			result, err := infix.evaluateTop()
+			if err != nil {
+				return err
+			}
+			infix.operand.Push(result)
+			if infix.operator.IsEmpty() {
+				return errors.New("Invalid/unbalanced expression")
+			}
+		}
+		// pop the (
+		infix.operator.Pop()
+	default:
+		if tok == scanner.Int {
+			value, _ := strconv.ParseInt(text, 10, 64)
+			infix.operand.Push(value)
+		} else if tok == scanner.Float {
+			value, _ := strconv.ParseFloat(text, 64)
+			infix.operand.Push(value)
+		} else {
+			return errors.New("Invalid tokens in the expression")
+		}
+	}
+
+	return nil
+}
+
 // Process parses the infix expression and returns the result
 func (infix *infixEval) process(expression string) error {
 	input := strings.NewReader(expression)
@@ -143,46 +184,13 @@ func (infix *infixEval) process(expression string) error {
 		text := s.TokenText()
 		symbol := translateOperator(text)
 
-		switch symbol {
-		case LPAREN:
-			infix.operator.Push(symbol)
-		case ADD, SUB, MUL, DIV, MOD:
-			for !infix.operator.IsEmpty() && (precedence(symbol) < precedence(infix.operator.Peek().(rune))) {
-				result, err := infix.evaluateTop()
-				if err != nil {
-					return err
-				}
-				infix.operand.Push(result)
-			}
-			infix.operator.Push(symbol)
-		case RPAREN:
-			for infix.operator.Peek().(rune) != LPAREN {
-				result, err := infix.evaluateTop()
-				if err != nil {
-					return err
-				}
-				infix.operand.Push(result)
-				if infix.operator.IsEmpty() {
-					return errors.New("Invalid/unbalanced expression")
-				}
-			}
-			// pop the (
-			infix.operator.Pop()
-		default:
-			if tok == scanner.Int {
-				value, _ := strconv.ParseInt(text, 10, 64)
-				infix.operand.Push(value)
-			} else if tok == scanner.Float {
-				value, _ := strconv.ParseFloat(text, 64)
-				infix.operand.Push(value)
-			} else {
-				return errors.New("Invalid tokens in the expression")
-			}
+		if err := infix.handleInput(tok, symbol, text); err != nil {
+			return err
 		}
 	}
 
 	for !infix.operator.IsEmpty() {
-		if infix.operand.IsEmpty() || len(infix.operand.item) < 2 {
+		if infix.operand.Count() < 2 {
 			return errors.New("Invalid/unbalanced expression")
 		}
 
